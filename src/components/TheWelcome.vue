@@ -17,7 +17,7 @@ import HelloWorld from './HelloWorld.vue'
         <HelloWorld />
       </div>
     </div>
-    <div>
+    <div class="items">
 
       <WelcomeItem>
         <template #icon>
@@ -41,7 +41,7 @@ import HelloWorld from './HelloWorld.vue'
         <template #icon>
           <CommunityIcon />
         </template>
-        <template #heading><RouterLink to="/add-files">Определить класс</RouterLink></template>
+        <template #heading><RouterLink to="/check-files">Определить класс</RouterLink></template>
 
         Загрузите файлы и определите класс документа.
       </WelcomeItem>
@@ -95,12 +95,15 @@ nav a.router-link-exact-active:hover {
 
 nav a {
   display: inline-block;
-  padding: 0 1rem;
   border-left: 1px solid var(--color-border);
 }
 
 nav a:first-of-type {
   border: 0;
+}
+
+.items {
+  padding-bottom: 30px;
 }
 
 @media (max-width: 1024px) {

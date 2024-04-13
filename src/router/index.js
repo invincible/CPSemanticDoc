@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import AddFiles from '@/components/AddFiles.vue'
+import CheckFiles from '@/components/CheckFiles.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,6 +15,11 @@ const router = createRouter({
       path: '/add-files',
       name: 'add-files',
       component: AddFiles
+    },
+    {
+      path: '/check-files',
+      name: 'check-files',
+      component: CheckFiles
     },
     {
       path: '/about',

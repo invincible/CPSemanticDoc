@@ -13,6 +13,7 @@ import TheWelcome from '../components/TheWelcome.vue'
   .main {
     display: flex;
     place-items: center;
+    min-height: 80vh;
   }
 }
 </style>

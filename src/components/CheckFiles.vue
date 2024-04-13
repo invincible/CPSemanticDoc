@@ -12,8 +12,6 @@ import IconCross from "@/components/icons/IconCross.vue";
 import IconZip from "@/components/icons/IconZip.vue";
 import BackIcon from "@/components/icons/BackIcon.vue";
 
-const classType = ref(null)
-
 const inputFile = ref(null);
 
 const isText = ref(false);
@@ -21,29 +19,40 @@ const documentText = ref(null);
 const documentFile = ref(null);
 const selectedFiles = ref([]);
 
-const url = "https://hui.com/api/huemoe";
-const saveFiles = (files) => {
-    const formData = new FormData();
-    for (var x = 0; x < files.length; x++) {
-        formData.append("files[]", files[x]);
-    }
-
-    axios
-        .post(url, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        })
+const postFiles = () => {
+    if(isText.value) {
+        axios
+        .post('http://51.250.8.113/classification/text', {text: documentText.value})
         .then((response) => {
             console.info(response.data);
         })
         .catch((err) => {
             console.error(err);
         });
+    } else {
+        const formData = new FormData();
+        // for (var x = 0; x < files.length; x++) {
+        //     formData.append("file", files[x]);
+        // }
+        formData.append("file", selectedFiles.value[0])
+
+        axios
+            .post('http://51.250.8.113/classification/file', formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            })
+            .then((response) => {
+                console.info(response.data);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
+    }
 };
 
 function onDrop(acceptFiles, rejectReasons) {
-    selectedFiles.value = acceptFiles;
+    selectedFiles.value = [acceptFiles[0]];
     console.log(rejectReasons);
 }
 
@@ -86,10 +95,9 @@ const removeFile = function (filename) {
     <div class="add-files">
         <div class="header">
             <BackIcon class="back" @click="$router.go(-1)"/>
-            <h2>Добавление файлов</h2>
+            <h2>Провека файлов</h2>
             <div></div>
         </div>
-        <input v-model="classType" type="text" placeholder="Введите класс файла">
         <BaseToggler v-model="isText">
             <template #left> Выбрать файл </template>
             <template #right> Вставить текст </template>
@@ -119,7 +127,7 @@ const removeFile = function (filename) {
             </div>
         </template>
 
-        <button class="input-file">Отправить</button>
+        <button class="input-file" @click="postFiles">Отправить</button>
 
         <input ref="inputFile" id="inputFile" type="file" style="display: none" />
     </div>
@@ -187,14 +195,6 @@ const removeFile = function (filename) {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     gap: 10px;
-}
-
-input {
-    width: 100%;
-    background-color: var(--vt-c-black-soft);
-    border: 1px solid var(--vt-c-black-mute);
-    color: var(--vt-c-text-dark-1);
-    padding: 10px;
 }
 
 .textarea {
