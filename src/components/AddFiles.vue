@@ -1,7 +1,9 @@
 <script setup>
 import axios from "axios";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useDropzone } from "vue3-dropzone";
+import VueSelect from "vue-select";
+import 'vue-select/dist/vue-select.css';
 
 import BaseToggler from "@/components/BaseToggler.vue";
 import IconHTML from "@/components/icons/IconHTML.vue";
@@ -20,6 +22,8 @@ const isText = ref(false);
 const documentText = ref(null);
 const documentFile = ref(null);
 const selectedFiles = ref([]);
+
+const types = ref(["Доверенность", "Договор", "Акт", "Заявление", "Приказ", "Счет", "Приложение", "Соглашение", "Договор оферты", "Устав", "Решение"]);
 
 const url = "https://hui.com/api/huemoe";
 const saveFiles = (files) => {
@@ -80,6 +84,30 @@ const isZipFile = function (filename) {
 const removeFile = function (filename) {
     selectedFiles.value = selectedFiles.value.filter((file) => file.name !== filename);
 }
+
+onMounted(() => {
+   axios
+        .get('http://51.250.8.113/types')
+        .then((response) => {
+            console.info(response.data);
+            types.value = response.data;
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+});
+
+const fetchOptions = function (options, search) {
+    if (!search || !search.trim()) return options;
+
+    const filtered = options.filter((type) => type.includes(search));
+
+    if (filtered.length === 0) {
+        return [`Добавить класс «${search}»`];
+    }
+
+    return filtered;
+}
 </script>
 
 <template>
@@ -89,7 +117,10 @@ const removeFile = function (filename) {
             <h2>Добавление файлов</h2>
             <div></div>
         </div>
-        <input v-model="classType" type="text" placeholder="Введите класс файла">
+        <div style="width: 100%">
+            <span>Выберите класс файла</span>
+            <vue-select class="select" :options="types" :filter="fetchOptions" />
+        </div>
         <BaseToggler v-model="isText">
             <template #left> Выбрать файл </template>
             <template #right> Вставить текст </template>
@@ -278,5 +309,20 @@ input {
     position: relative;
     right: 0;
     bottom: 0;
+}
+
+.select {
+    width: 100%;
+    background-color: var(--vt-c-black-soft);
+    border-color: var(--vt-c-black-mute);
+    color: #bdbdbd;
+}
+
+:global(.vs__dropdown-menu) {
+    background-color: var(--vt-c-black-mute) !important;
+}
+
+:global(.vs__dropdown-option--highlight) {
+    background-color: hsla(160, 100%, 37%, 1);
 }
 </style>
