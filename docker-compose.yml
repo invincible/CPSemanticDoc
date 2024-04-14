@@ -1,0 +1,42 @@
+version: '3.7'
+services:
+  ml-service:
+    container_name: ml-service
+    build: ./
+    restart: "no"
+    
+    depends_on:
+      - app_db
+      
+    ports:
+      - "5000:80"
+
+    networks:
+      - app_network
+
+  app_db:
+    container_name: app_db
+    image: postgres:latest
+    restart: "no"
+    environment:
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: post
+      POSTGRES_USER: postgres
+      POSTGRES_HOST: app_db
+      POSTGRES_PORT: 5432
+      POSTGRES_POOL: 10
+
+    volumes:
+      - app_data:/var/lib/postgresql/data
+    networks:
+      - app_network
+
+volumes:
+  app_data:
+    name: app_data
+
+networks:
+  app_network:
+    name: app_network
+    driver: bridge
